@@ -1,8 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"errors"
+	"net/http"
 )
+
+var errRequestFailed = errors.New("request failed")
 
 func main() {
 	urls := []string{
@@ -18,6 +21,14 @@ func main() {
 	}
 
 	for _, url := range urls {
-		fmt.Println(url)
+		hitURL(url)
 	}
+}
+
+func hitURL(url string) error {
+	resp, err := http.Get(url)
+	if err != nil || resp.StatusCode >= 400 {
+		return errRequestFailed
+	}
+	return nil
 }
