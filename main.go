@@ -3,11 +3,13 @@ package main
 import "fmt"
 
 func main() {
-	a := 2
-	b := a
-	c := &a
-	a = 10
-	*c = 200
-	fmt.Println(a, b, c, *c)
-	fmt.Println(&a, &b, &c)
+	names := [5]string{"nico", "urim", "ong"}
+	names[3] = "ala"
+	names[4] = "ala"
+	// names[5] = "ala"
+	fmt.Println(names)
+
+	fruits := []string{"🍎", "🍇", "🍌"}
+	fruits = append(fruits, "🍓", "🍉", "🍍")
+	fmt.Println(fruits)
 }
