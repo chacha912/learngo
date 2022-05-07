@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/chacha912/learngo/accounts"
+	"github.com/chacha912/learngo/mydict"
 )
 
 func main() {
-	account := accounts.NewAccount("yourim")
-	account.Deposit(10)
-	fmt.Println(account)
+	dictionary := mydict.Dictionary{"first": "First word"}
+	dictionary["hello"] = "hello world"
+
+	fmt.Println(dictionary)
+	fmt.Println(dictionary["hello"])
 }
