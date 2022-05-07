@@ -11,4 +11,13 @@ func main() {
 
 	something.SayHello()
 	// something.sayBye()
+
+	const name string = "nico"
+	// name = "Lynn"
+
+	var name2 string = "yourim"
+	name2 = "ong"
+
+	name3 := "yourim"
+
 }
