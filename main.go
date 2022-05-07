@@ -1,37 +1,21 @@
 package main
 
-import (
-	"fmt"
-	"strings"
-)
+import "fmt"
 
-func multiply(a, b int) int {
-	return a * b
-}
+func superAdd(numbers ...int) int {
+	total := 0
+	for index, number := range numbers {
+		fmt.Println(index, number)
+		total += number
+	}
 
-func lenAndUpper(name string) (int, string) {
-	return len(name), strings.ToUpper(name)
-}
-
-func repeatMe(words ...string) {
-	fmt.Println(words)
-}
-
-func lenAndUpper2(name string) (length int, uppercase string) {
-	defer fmt.Println("I'm done")
-	length = len(name)
-	uppercase = strings.ToUpper(name)
-	return
+	for i := 0; i < len(numbers); i++ {
+		fmt.Println(numbers[i])
+	}
+	return total
 }
 
 func main() {
-	fmt.Println(multiply(2, 2))
-
-	totalLength, upperName := lenAndUpper("urim")
-	fmt.Println(totalLength, upperName)
-
-	totalLength, upperName = lenAndUpper2("ong")
-	fmt.Println(totalLength, upperName)
-
-	repeatMe("nico", "yourim", "dal", "ong")
+	result := superAdd(1, 2, 3, 4, 5)
+	fmt.Println("result", result)
 }
