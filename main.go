@@ -18,6 +18,7 @@ func repeatMe(words ...string) {
 }
 
 func lenAndUpper2(name string) (length int, uppercase string) {
+	defer fmt.Println("I'm done")
 	length = len(name)
 	uppercase = strings.ToUpper(name)
 	return
