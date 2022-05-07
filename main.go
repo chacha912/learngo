@@ -3,13 +3,11 @@ package main
 import "fmt"
 
 func main() {
-	names := [5]string{"nico", "urim", "ong"}
-	names[3] = "ala"
-	names[4] = "ala"
-	// names[5] = "ala"
-	fmt.Println(names)
+	nico := map[string]string{"name": "nico", "age": "12"}
 
-	fruits := []string{"🍎", "🍇", "🍌"}
-	fruits = append(fruits, "🍓", "🍉", "🍍")
-	fmt.Println(fruits)
+	for key, value := range nico {
+		fmt.Println(key, value)
+	}
+
+	fmt.Println(nico["age"])
 }
