@@ -1,7 +1,7 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
 
 	"github.com/labstack/echo/v4"
 )
@@ -12,6 +12,7 @@ func main() {
 
 	// Routes
 	e.GET("/", handleHome)
+	e.POST("/scrape", handleScrape)
 
 	// Start server
 	e.Logger.Fatal(e.Start(":1323"))
@@ -19,5 +20,10 @@ func main() {
 
 // Handler
 func handleHome(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
+	return c.File("home.html")
+}
+
+func handleScrape(c echo.Context) error {
+	fmt.Println(c.FormValue("term"))
+	return nil
 }
