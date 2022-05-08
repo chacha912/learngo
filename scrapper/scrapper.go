@@ -83,14 +83,15 @@ func extractJob(card *goquery.Selection, c chan<- extractedJob) {
 	}
 
 	c <- extractedJob{
-		id:       cleanString(id),
-		title:    cleanString(title),
-		location: cleanString(location),
-		salary:   cleanString(salary),
-		summary:  cleanString(summary)}
+		id:       CleanString(id),
+		title:    CleanString(title),
+		location: CleanString(location),
+		salary:   CleanString(salary),
+		summary:  CleanString(summary)}
 }
 
-func cleanString(str string) string {
+// CleanString cleans a string
+func CleanString(str string) string {
 	return strings.Join(strings.Fields(strings.TrimSpace(str)), " ")
 }
 
@@ -106,7 +107,7 @@ func getPages(url string) int {
 	checkErr(err)
 
 	doc.Find("#searchCountPages").Each(func(i int, s *goquery.Selection) {
-		pages = getPageNum(cleanString(s.Text()))
+		pages = getPageNum(CleanString(s.Text()))
 	})
 	return pages
 }
