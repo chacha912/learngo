@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type result struct {
+type requestResult struct {
 	url    string
 	status string
 }
@@ -23,21 +23,25 @@ func main() {
 		"https://academy.nomadcoders.co/",
 	}
 
-	// results := map[string]string{}
-	c := make(chan result)
+	results := map[string]string{}
+	c := make(chan requestResult)
 
 	for _, url := range urls {
 		go hitURL(url, c)
 	}
 
 	for i := 0; i < len(urls); i++ {
-		fmt.Println(<-c)
+		result := <-c
+		results[result.url] = result.status
 	}
 
+	for url, status := range results {
+		fmt.Println(url, status)
+	}
 }
 
 // send only
-func hitURL(url string, c chan<- result) {
+func hitURL(url string, c chan<- requestResult) {
 	fmt.Println("Checking:", url)
 	resp, err := http.Get(url)
 	status := "OK "
@@ -46,5 +50,5 @@ func hitURL(url string, c chan<- result) {
 	} else if resp.StatusCode >= 400 {
 		status = "FAILED" + resp.Status
 	}
-	c <- result{url: url, status: status}
+	c <- requestResult{url: url, status: status}
 }
