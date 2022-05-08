@@ -54,7 +54,7 @@ func getPage(page int, mainC chan<- []extractedJob) {
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	checkErr(err)
 
-	searchCards := doc.Find(".jobCard_mainContent")
+	searchCards := doc.Find(".tapItem")
 	searchCards.Each(func(i int, card *goquery.Selection) {
 		go extractJob(card, c)
 	})
@@ -68,19 +68,21 @@ func getPage(page int, mainC chan<- []extractedJob) {
 }
 
 func extractJob(card *goquery.Selection, c chan<- extractedJob) {
-	titleElem := card.Find(".jobTitle>a")
-	id, _ := titleElem.Attr("data-jk")
-	title := cleanString(titleElem.Text())
-	location := cleanString(card.Find(".companyLocation").Text())
-	salary := cleanString(card.Find(".salary-snippet").Text())
-	summary := cleanString(card.Find(".job-snippet").Text())
+	id, _ := card.Attr("data-jk")
+	title := card.Find(".jobTitle").Text()
+	location := card.Find(".companyLocation").Text()
+	salary := card.Find(".salary-snippet").Text()
+	summary := card.Find(".job-snippet").Text()
+	if salary == "" {
+		salary = "면접 후 협의"
+	}
 
 	c <- extractedJob{
-		id:       id,
-		title:    title,
-		location: location,
-		salay:    salary,
-		summary:  summary}
+		id:       cleanString(id),
+		title:    cleanString(title),
+		location: cleanString(location),
+		salay:    cleanString(salary),
+		summary:  cleanString(summary)}
 }
 
 func cleanString(str string) string {
@@ -112,13 +114,17 @@ func writeJobs(jobs []extractedJob) {
 	w := csv.NewWriter(file)
 	defer w.Flush()
 
-	headers := []string{"ID", "Title", "Location", "Salary", "Summary"}
+	headers := []string{"Link", "Title", "Location", "Salary", "Summary"}
 
 	wErr := w.Write(headers)
 	checkErr(wErr)
 
 	for _, job := range jobs {
-		jobSlice := []string{"https://kr.indeed.com/viewjob?jk=" + job.id, job.title, job.location, job.salay, job.summary}
+		joblink := ""
+		if job.id != "" {
+			joblink = "https://kr.indeed.com/viewjob?jk=" + job.id
+		}
+		jobSlice := []string{joblink, job.title, job.location, job.salay, job.summary}
 		jwErr := w.Write(jobSlice)
 		checkErr(jwErr)
 	}
