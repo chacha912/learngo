@@ -6,8 +6,10 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -23,6 +25,7 @@ type extractedJob struct {
 var baseURL string = "https://kr.indeed.com/jobs?q=python&limit=50"
 
 func main() {
+	start := time.Now()
 	var jobs []extractedJob
 	c := make(chan []extractedJob)
 	totalPages := getPages()
@@ -38,6 +41,8 @@ func main() {
 
 	writeJobs(jobs)
 	fmt.Println("Done, extracted", len(jobs))
+	elapsed := time.Since(start)
+	fmt.Println("total time", elapsed)
 }
 
 func getPage(page int, mainC chan<- []extractedJob) {
@@ -100,11 +105,23 @@ func getPages() int {
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	checkErr(err)
 
-	doc.Find(".pagination").Each(func(i int, s *goquery.Selection) {
-		pages = s.Find("li").Length()
+	doc.Find("#searchCountPages").Each(func(i int, s *goquery.Selection) {
+		pages = getPageNum(cleanString(s.Text()))
 	})
 
 	return pages
+}
+
+func getPageNum(str string) int {
+	r, _ := regexp.Compile("[0-9]")
+	pageList := r.FindAllString(str, -1)[1:]
+	totalResults, _ := strconv.Atoi(strings.Join(pageList, ""))
+	itemsPerPage := 50
+	pageNum := totalResults / itemsPerPage
+	if totalResults%itemsPerPage != 0 {
+		pageNum += 1
+	}
+	return pageNum
 }
 
 func writeJobs(jobs []extractedJob) {
