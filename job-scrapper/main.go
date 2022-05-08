@@ -18,7 +18,7 @@ type extractedJob struct {
 	id       string
 	title    string
 	location string
-	salay    string
+	salary   string
 	summary  string
 }
 
@@ -86,7 +86,7 @@ func extractJob(card *goquery.Selection, c chan<- extractedJob) {
 		id:       cleanString(id),
 		title:    cleanString(title),
 		location: cleanString(location),
-		salay:    cleanString(salary),
+		salary:   cleanString(salary),
 		summary:  cleanString(summary)}
 }
 
@@ -108,7 +108,6 @@ func getPages() int {
 	doc.Find("#searchCountPages").Each(func(i int, s *goquery.Selection) {
 		pages = getPageNum(cleanString(s.Text()))
 	})
-
 	return pages
 }
 
@@ -141,7 +140,7 @@ func writeJobs(jobs []extractedJob) {
 		if job.id != "" {
 			joblink = "https://kr.indeed.com/viewjob?jk=" + job.id
 		}
-		jobSlice := []string{joblink, job.title, job.location, job.salay, job.summary}
+		jobSlice := []string{joblink, job.title, job.location, job.salary, job.summary}
 		jwErr := w.Write(jobSlice)
 		checkErr(jwErr)
 	}
